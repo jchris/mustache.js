@@ -73,13 +73,12 @@ var Mustache = {
 
     // for each {{#foo}}{{/foo}} section do...
     return template.replace(regex, function(match, name, content) {
-        var value = that.find(name, {section:true});
+        var value = that.find(name);
         if(that.is_array(value)) { // Enumerable, Let's loop!
           return value.map(function(row) {
             return that.render(content, row);
           }).join('');
-        } else if(that.is_function(value)) { // Function, let's iterate.
-          // throw("fun")
+        } else if(that.is_iterator(value)) { // Function, let's iterate.
           var result = [];
           var row;          
           while (row = value()) {
@@ -163,15 +162,16 @@ var Mustache = {
     find `name` in current `context`. That is find me a value 
     from the view object
   */
-  find: function(name, opts) {
-    opts = opts || {};
+  find: function(name) {
     name = this.trim(name);
     var context = this.context;
     if(typeof context[name] === "function") {
-      if (opts.section) {
-        return function() {
+      if (context[name].iterator) {
+        var f = function() {
           return context[name].apply(context);
         };
+        f.iterator = true;
+        return f;
       } else {
         return context[name].apply(context);        
       }
@@ -224,8 +224,8 @@ var Mustache = {
       a.constructor === Array);
   },
 
-  is_function : function(f) {
-    return (typeof f === 'function');
+  is_iterator : function(f) {
+    return (typeof f === 'function' && f.iterator);
   },
 
   /*
