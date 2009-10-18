@@ -185,7 +185,7 @@ var Mustache = {
     if(value !== undefined) {
       return value;
     }
-    throw("Can't find " + name + " in " + context);
+    throw("Can't find '" + name + "' in " + context.toSource());
   },
 
   // Utility methods
@@ -208,10 +208,14 @@ var Mustache = {
 
   getValue: function(context, name) {
     var part, c = context, parts = name.split('.');
-    while (part=parts.shift()) {
-      c = c[part];
+    try {
+      while (part=parts.shift()) {
+        c = c[part];
+      }
+      return c;      
+    } catch(e) {
+      throw("No value found at '"+name+"' in "+context.toSource());
     }
-    return c;
   },
 
   /*
