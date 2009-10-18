@@ -15,8 +15,12 @@ runner = <<-JS
 #{mustache}
 #{view}
 var template = #{template};
-var result = Mustache.to_html(template, #{testname});
-print(result);
+try {
+  var result = Mustache.to_html(template, #{testname});  
+  print(result);
+} catch(e) {
+  print("error: "+e.reason)
+}
 JS
 
 File.open("runner.js", 'w') {|f| f << runner}

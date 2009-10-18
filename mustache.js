@@ -170,19 +170,20 @@ var Mustache = {
   find: function(name) {
     name = this.trim(name);
     var context = this.context;
-    if(typeof context[name] === "function") {
-      if (context[name].iterator) {
+    var value = this.getValue(context, name);
+    if(typeof value === "function") {
+      if (value.iterator) {
         var f = function() {
-          return context[name].apply(context);
+          return value.apply(context);
         };
         f.iterator = true;
         return f;
       } else {
-        return context[name].apply(context);        
+        return value.apply(context);        
       }
     }
-    if(context[name] !== undefined) {
-      return context[name];
+    if(value !== undefined) {
+      return value;
     }
     throw("Can't find " + name + " in " + context);
   },
@@ -203,6 +204,14 @@ var Mustache = {
         default: return s;
       }
     });
+  },
+
+  getValue: function(context, name) {
+    var part, c = context, parts = name.split('.');
+    while (part=parts.shift()) {
+      c = c[part];
+    }
+    return c;
   },
 
   /*
