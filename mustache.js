@@ -18,12 +18,17 @@ var Mustache = {
     Public method. Turns a template and view into HTML
   */
   to_html: function(template, view) {
-    return this.render(template, view);
+    try {
+      return this.render(template, view);      
+    } catch(e) {
+      throw({"error":"mustache_error","reason":e.toString()})
+    }
   },
 
   // Private Methods
   render: function(template, view) {
     // fail fast
+    if (!template) throw("template is missing")
     if(template.indexOf(this.otag) == -1) {
       return template;
     }
