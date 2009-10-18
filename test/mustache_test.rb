@@ -19,7 +19,7 @@ try {
   var result = Mustache.to_html(template, #{testname});  
   print(result);
 } catch(e) {
-  print("error: "+e.reason)
+  print("error: "+e.toSource())
 }
 JS
 
