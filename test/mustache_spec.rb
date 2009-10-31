@@ -54,7 +54,11 @@ describe "mustache" do
             var result = Mustache.to_html(template, #{testname});
             print(result);
           } catch(e) {
-            print('ERROR: ' + e.message);
+            if (e.error && e.reason) {
+              print('ERROR: ' + e.error + " reason: "+ e.reason);              
+            } else {
+              print("Error: "+e.toSource());
+            }
           }
         JS
 
