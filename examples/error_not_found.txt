@@ -1,1 +1,1 @@
-ERROR: 'foo' not found in context
+ERROR: mustache_error reason: Can't find 'foo' in ({bar:2})
