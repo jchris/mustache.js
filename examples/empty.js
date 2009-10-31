@@ -1,4 +1,6 @@
 var empty = {
   header: "Colors",
-  item: []
+  item: [],
+  iter : function() {}
 };
+empty.iter.iterator = true;
