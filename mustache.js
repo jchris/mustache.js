@@ -63,7 +63,9 @@ var Mustache = function() {
           var result = [];
           var row;          
           while (row = value()) {
-            result.push(that.render(content, row));
+            var rendered = that.render(content, that.merge(context,
+                    that.create_context(row)), partials);
+            result.push(rendered);
           } // fuck buffering, works for now though.
           return result.join('');
         } else if(value) { // boolean section
