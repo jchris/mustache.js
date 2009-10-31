@@ -34,10 +34,10 @@ describe "mustache" do
       try {
         print(Mustache.to_html("{{#list}}{{x}}{{/list}}", {list: [{}]}));
       } catch(e) {
-        print('ERROR: ' + e.message);
+        print('ERROR: ' + e.reason);
       }
     JS
-    run_js(js).should == "ERROR: 'x' not found in context\n"
+    run_js(js).should include("Can't find 'x'")
   end
   
   non_partials.each do |testname|
@@ -83,7 +83,11 @@ describe "mustache" do
             var result = Mustache.to_html(template, partial_context, partials);
             print(result);
           } catch(e) {
-            print('ERROR: ' + e.message);
+            if (e.error && e.reason) {
+              print('ERROR: ' + e.error + " reason: "+ e.reason);              
+            } else {
+              print("Error: "+e.toSource());
+            }
           }
         JS
       
