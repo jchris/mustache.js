@@ -60,6 +60,30 @@ describe "mustache" do
 
         run_js(runner).should == expect
       end
+      it "should sendFun the correct html" do
+
+        view, template, expect = load_test(__DIR__, testname)
+
+        runner = <<-JS
+          try {
+            #{@mustache}
+            #{view}
+            var chunks = [];
+            var sendFun = function(chunk) {
+              if (chunk != "") {
+                chunks.push(chunk);
+              }
+            }
+            var template = #{template};
+            Mustache.to_html(template, #{testname}, null, sendFun);
+            print(chunks.join("\\n"));
+          } catch(e) {
+            print('ERROR: ' + e.message);
+          }
+        JS
+
+        run_js(runner).strip.should == expect.strip
+      end
     end
   end
 
@@ -84,6 +108,32 @@ describe "mustache" do
         JS
       
         run_js(runner).should == expect
+      end
+      it "should sendFun the correct html" do
+
+        view, template, partial, expect =
+              load_test(__DIR__, testname, true)
+
+        runner = <<-JS
+          try {
+            #{@mustache}
+            #{view};
+            var template = #{template};
+            var partials = {"partial": #{partial}};
+            var chunks = [];
+            var sendFun = function(chunk) {
+              if (chunk != "") {
+                chunks.push(chunk);
+              }
+            }
+            Mustache.to_html(template, partial_context, partials, null, sendFun);
+            print(chunks.join("\\n"));
+          } catch(e) {
+            print('ERROR: ' + e.message);
+          }
+        JS
+
+        run_js(runner).strip.should == expect.strip
       end
     end
   end
