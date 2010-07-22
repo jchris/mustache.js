@@ -319,6 +319,9 @@ var Mustache = function() {
       if(!send_fun) {
         return renderer.buffer.join("\n");
       }
+    },
+    escape : function(text) {
+      return new Renderer().escape(text);
     }
   });
 }();
